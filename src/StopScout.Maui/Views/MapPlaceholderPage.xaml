@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="StopScout.Maui.Views.MapPlaceholderPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Mapa"
+    Padding="24">
+    <VerticalStackLayout VerticalOptions="Center" Spacing="8">
+        <Label
+            Text="Mapa przystanków"
+            FontFamily="OpenSansSemibold"
+            FontSize="22"
+            HorizontalTextAlignment="Center"
+            TextColor="{AppThemeBinding Light={StaticResource Gray950}, Dark={StaticResource White}}" />
+        <Label
+            Text="Milestone 3 — pinezki, GPS i mapa Gdańska pojawią się tutaj."
+            HorizontalTextAlignment="Center"
+            TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray300}}" />
+    </VerticalStackLayout>
+</ContentPage>

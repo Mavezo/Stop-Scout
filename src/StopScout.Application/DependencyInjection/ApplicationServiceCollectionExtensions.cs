@@ -9,6 +9,8 @@ public static class ApplicationServiceCollectionExtensions
     {
         services.AddTransient<GetLiveDeparturesUseCase>();
         services.AddTransient<GetStopUseCase>();
+        services.AddTransient<RegisterUserUseCase>();
+        services.AddTransient<LoginUserUseCase>();
         return services;
     }
 }

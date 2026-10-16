@@ -19,7 +19,7 @@ public static class DelayFormatter
             return new DelayStatus(DelayCategory.Minor, $"+{seconds}s", ShouldAnimate: false);
         }
 
-        var minutes = (int)Math.Round(seconds / 60.0, MidpointRounding.AwayFromZero);
+        var minutes = seconds / 60;
         return new DelayStatus(DelayCategory.Major, $"+{minutes} min", ShouldAnimate: true);
     }
 }

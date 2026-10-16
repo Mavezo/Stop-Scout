@@ -1,10 +1,5 @@
 namespace StopScout.Infrastructure.Ztm;
 
-/// <summary>
-/// Official ZTM Gdańsk open-data endpoints. Milestone 1 must not call them.
-/// Milestone 2: use the official CKAN stops feed from the assignment (stops.json)
-/// if this exact URL ever changes.
-/// </summary>
 public static class ZtmEndpoints
 {
     public const string Stops =

@@ -14,8 +14,6 @@ public static class InfrastructureServiceCollectionExtensions
         services.AddSingleton<IClock, SystemClock>();
         services.AddSingleton<IDepartureFeed, MockDepartureFeed>();
         services.AddSingleton<IStopCatalog, MockStopCatalog>();
-
-        // Milestone 2 / 3 adapters — registered so composition root is complete; unused in M1 UI.
         services.AddSingleton<IFavoriteStore, NotImplementedFavoriteStore>();
         services.AddSingleton<IUserStore, NotImplementedUserStore>();
         services.AddSingleton<IPasswordHasher, NotImplementedPasswordHasher>();

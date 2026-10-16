@@ -13,7 +13,7 @@
             HorizontalTextAlignment="Center"
             TextColor="{AppThemeBinding Light={StaticResource Gray950}, Dark={StaticResource White}}" />
         <Label
-            Text="Milestone 2 — rejestracja, logowanie i ulubione przystanki."
+            Text="Rejestracja, logowanie i ulubione przystanki pojawią się tutaj."
             HorizontalTextAlignment="Center"
             TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray300}}" />
     </VerticalStackLayout>

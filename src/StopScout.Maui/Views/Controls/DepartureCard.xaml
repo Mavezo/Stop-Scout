@@ -64,7 +64,7 @@
                     FontSize="13"
                     TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray300}}" />
 
-                <controls:DelayHighlight
+                <controls:DelayHighlightView
                     Grid.Row="1"
                     Grid.Column="1"
                     HorizontalOptions="End"

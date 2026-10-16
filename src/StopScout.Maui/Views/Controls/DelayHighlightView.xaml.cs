@@ -2,17 +2,20 @@ using StopScout.Domain.ValueObjects;
 
 namespace StopScout.Maui.Views.Controls;
 
-public partial class DelayHighlight : ContentView
+/// <summary>
+/// Coloured delay label with a looping opacity pulse for major delays.
+/// </summary>
+public partial class DelayHighlightView : ContentView
 {
-    public const string PulseAnimationName = "DelayPulse";
-
     public static readonly BindableProperty StatusProperty = BindableProperty.Create(
         nameof(Status),
         typeof(DelayStatus),
-        typeof(DelayHighlight),
+        typeof(DelayHighlightView),
         propertyChanged: OnStatusChanged);
 
-    public DelayHighlight()
+    private CancellationTokenSource? _pulseCts;
+
+    public DelayHighlightView()
     {
         InitializeComponent();
         Loaded += OnLoaded;
@@ -25,22 +28,9 @@ public partial class DelayHighlight : ContentView
         set => SetValue(StatusProperty, value);
     }
 
-    protected override void OnHandlerChanged()
-    {
-        base.OnHandlerChanged();
-        if (Handler is null)
-        {
-            StopPulse();
-        }
-        else
-        {
-            ApplyStatus();
-        }
-    }
-
     private static void OnStatusChanged(BindableObject bindable, object oldValue, object newValue)
     {
-        ((DelayHighlight)bindable).ApplyStatus();
+        ((DelayHighlightView)bindable).ApplyStatus();
     }
 
     private void OnLoaded(object? sender, EventArgs e) => ApplyStatus();
@@ -80,7 +70,7 @@ public partial class DelayHighlight : ContentView
         }
     }
 
-    private Color GetThemeColor(string lightKey, string darkKey)
+    private static Color GetThemeColor(string lightKey, string darkKey)
     {
         var key = Microsoft.Maui.Controls.Application.Current?.RequestedTheme == AppTheme.Dark ? darkKey : lightKey;
         if (Microsoft.Maui.Controls.Application.Current?.Resources.TryGetValue(key, out var value) == true && value is Color color)
@@ -94,24 +84,40 @@ public partial class DelayHighlight : ContentView
     private void StartPulse()
     {
         StopPulse();
-        Opacity = 1;
+        DelayLabel.Opacity = 1.0;
+        _pulseCts = new CancellationTokenSource();
+        _ = StartPulsingAsync(_pulseCts.Token);
+    }
 
-        var animation = new Animation();
-        animation.Add(0, 0.5, new Animation(v => Opacity = v, 1.0, 0.35, Easing.SinInOut));
-        animation.Add(0.5, 1, new Animation(v => Opacity = v, 0.35, 1.0, Easing.SinInOut));
-        animation.Commit(
-            this,
-            PulseAnimationName,
-            16,
-            700,
-            Easing.Linear,
-            finished: (_, _) => Opacity = 1,
-            repeat: () => Status?.ShouldAnimate == true);
+    private async Task StartPulsingAsync(CancellationToken token)
+    {
+        try
+        {
+            while (!token.IsCancellationRequested)
+            {
+                await DelayLabel.FadeToAsync(0.2, 700, Easing.SinInOut);
+                token.ThrowIfCancellationRequested();
+                await DelayLabel.FadeToAsync(1.0, 700, Easing.SinInOut);
+            }
+        }
+        catch (TaskCanceledException)
+        {
+        }
+        finally
+        {
+            if (!token.IsCancellationRequested)
+            {
+                DelayLabel.Opacity = 1.0;
+            }
+        }
     }
 
     private void StopPulse()
     {
-        this.AbortAnimation(PulseAnimationName);
-        Opacity = 1;
+        _pulseCts?.Cancel();
+        _pulseCts?.Dispose();
+        _pulseCts = null;
+        DelayLabel.CancelAnimations();
+        DelayLabel.Opacity = 1.0;
     }
 }

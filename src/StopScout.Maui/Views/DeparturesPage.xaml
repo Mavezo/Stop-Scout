@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="StopScout.Maui.Views.DeparturesPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:StopScout.Maui.Views.Controls"
+    xmlns:models="clr-namespace:StopScout.Maui.Models"
+    xmlns:vm="clr-namespace:StopScout.Maui.ViewModels"
+    x:DataType="vm:DeparturesViewModel"
+    Title="Odjazdy"
+    Padding="16,12">
+
+    <Grid RowDefinitions="Auto,*,Auto">
+        <VerticalStackLayout Spacing="2">
+            <Label
+                Text="{Binding StopName}"
+                FontFamily="OpenSansSemibold"
+                FontSize="22"
+                TextColor="{AppThemeBinding Light={StaticResource Gray950}, Dark={StaticResource White}}" />
+            <Label
+                FontSize="14"
+                TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray300}}">
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span Text="Przystanek " />
+                        <Span Text="{Binding StopId}" />
+                        <Span Text="  ·  " />
+                        <Span Text="{Binding StopPole}" />
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
+            <Label
+                Text="{Binding LastUpdatedText}"
+                FontSize="12"
+                TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray300}}" />
+        </VerticalStackLayout>
+
+        <Grid Grid.Row="1" Margin="0,12,0,12">
+            <RefreshView
+                IsRefreshing="{Binding IsRefreshing}"
+                Command="{Binding RefreshCommand}"
+                IsVisible="{Binding ShowList}">
+                <CollectionView
+                    ItemsSource="{Binding Departures}"
+                    SelectionMode="None">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:DepartureListItem">
+                            <Grid>
+                                <controls:DepartureCard Item="{Binding .}" />
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                    <CollectionView.EmptyView>
+                        <Label
+                            Margin="0,32"
+                            HorizontalTextAlignment="Center"
+                            Text="Brak odjazdów w najbliższym czasie"
+                            TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray300}}" />
+                    </CollectionView.EmptyView>
+                </CollectionView>
+            </RefreshView>
+
+            <VerticalStackLayout
+                IsVisible="{Binding IsLoading}"
+                VerticalOptions="Center"
+                HorizontalOptions="Center"
+                Spacing="12">
+                <ActivityIndicator IsRunning="True" />
+                <Label
+                    Text="Ładowanie odjazdów…"
+                    HorizontalTextAlignment="Center"
+                    TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray300}}" />
+            </VerticalStackLayout>
+
+            <Border
+                IsVisible="{Binding HasError}"
+                Padding="16"
+                StrokeShape="RoundRectangle 12"
+                BackgroundColor="{AppThemeBinding Light={StaticResource ErrorBackground}, Dark={StaticResource ErrorBackgroundDark}}"
+                StrokeThickness="0"
+                VerticalOptions="Center">
+                <VerticalStackLayout Spacing="12">
+                    <Label
+                        Text="Nie udało się pobrać odjazdów"
+                        FontFamily="OpenSansSemibold"
+                        FontSize="16"
+                        TextColor="{AppThemeBinding Light={StaticResource DelayMajor}, Dark={StaticResource DelayMajorDark}}" />
+                    <Label
+                        Text="{Binding ErrorMessage}"
+                        TextColor="{AppThemeBinding Light={StaticResource Gray800}, Dark={StaticResource Gray200}}" />
+                    <Button Text="Spróbuj ponownie" Command="{Binding LoadCommand}" />
+                </VerticalStackLayout>
+            </Border>
+        </Grid>
+
+        <Grid
+            Grid.Row="2"
+            ColumnDefinitions="*,*"
+            ColumnSpacing="8">
+            <Button Text="Odśwież" Command="{Binding RefreshCommand}" />
+            <Button
+                Grid.Column="1"
+                Text="Symuluj błąd"
+                Command="{Binding SimulateErrorCommand}"
+                BackgroundColor="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}"
+                TextColor="{AppThemeBinding Light={StaticResource Gray950}, Dark={StaticResource White}}" />
+        </Grid>
+    </Grid>
+</ContentPage>
